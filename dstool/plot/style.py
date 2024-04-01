@@ -16,6 +16,7 @@ def set_plotly_theme(fig):
     )
     return fig
 
+
 def set_font(fig):
     fig.update_layout(
         font_family="Arial",

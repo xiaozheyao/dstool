@@ -1,3 +1,3 @@
 from .parallel_func import parallel
 
-__all__ = ['parallel']
+__all__ = ["parallel"]
