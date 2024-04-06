@@ -2,7 +2,6 @@ import safetensors as st
 from rich.table import Table
 
 
-
 def get_tensor_stats(filepath):
     tensor_stats = {}
     with st.safe_open(filepath, "torch") as f:
