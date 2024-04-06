@@ -1,2 +1,5 @@
 joblib
 plotly
+rich
+safetensors
+typer
