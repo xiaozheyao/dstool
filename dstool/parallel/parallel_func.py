@@ -1,5 +1,6 @@
 from multiprocessing import cpu_count
 from typing import Callable
+
 from joblib import Parallel, delayed
 
 

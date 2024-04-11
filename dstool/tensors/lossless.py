@@ -1,15 +1,18 @@
-import torch
-import cupy as cp
 from typing import Dict
-from torch.utils.dlpack import to_dlpack, from_dlpack
+
+import cupy as cp
+import torch
+from torch.utils.dlpack import from_dlpack, to_dlpack
 
 try:
     import kvikio
-    from kvikio.nvcomp import LZ4Manager
-    from kvikio.nvcomp import SnappyManager
-    from kvikio.nvcomp import BitcompManager
-    from kvikio.nvcomp import GdeflateManager
-    from kvikio.nvcomp import CascadedManager
+    from kvikio.nvcomp import (
+        BitcompManager,
+        CascadedManager,
+        GdeflateManager,
+        LZ4Manager,
+        SnappyManager,
+    )
 except ImportError:
     raise ImportError(
         "Please install kvikio to use the LosslessCompressor class. "
@@ -33,7 +36,9 @@ cp_dtype_maps = {
 
 class LosslessCompressor:
 
-    def __init__(self, algorithm: str = "gdeflate", device_id: int = 0) -> None:
+    def __init__(
+        self, algorithm: str = "gdeflate", device_id: int = 0
+    ) -> None:
         if algorithm == "gdeflate":
             self.comp_manager = GdeflateManager(device_id=device_id)
         elif algorithm == "lz4":
@@ -92,8 +97,8 @@ class LosslessCompressor:
         tensors_shape = {}
         tensors_dtype = {}
         for key in state_dict:
-            tensors[key], tensors_shape[key], tensors_dtype[key] = self.compress_tensor(
-                state_dict[key]
+            tensors[key], tensors_shape[key], tensors_dtype[key] = (
+                self.compress_tensor(state_dict[key])
             )
         return tensors, tensors_shape, tensors_dtype
 
