@@ -1,2 +1,7 @@
-site_name: dstool
-theme: readthedocs
+site_name: DSTool
+theme:
+  name: "readthedocs"
+
+plugins:
+  - search
+  - mkdocstrings

@@ -15,6 +15,10 @@ def viewtensor(filepath: str):
     console.print(table)
     
 @app.command()
+def decompress(filepath: str):
+    pass
+    
+@app.command()
 def version():
     print("0.1.0")
 

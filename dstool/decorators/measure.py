@@ -1,8 +1,8 @@
-import contextlib
-from timeit import default_timer
-from typing import Callable
-
 import joblib
+import contextlib
+from typing import Callable
+from timeit import default_timer
+
 
 
 @contextlib.contextmanager
