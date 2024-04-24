@@ -1,10 +1,10 @@
+import json
+
+import cupy as cp
 import safetensors as st
 from rich.table import Table
-from vllm.delta.compressor import LosslessCompressor
-import safetensors as st
-import json
-import cupy as cp
 from safetensors.torch import save_file
+from vllm.delta.compressor import LosslessCompressor
 
 
 def get_tensor_stats(filepath):
@@ -14,8 +14,10 @@ def get_tensor_stats(filepath):
             tensor_stats[key] = {
                 "shape": f.get_tensor(key).shape,
                 "dtype": f.get_tensor(key).dtype,
+                "nbytes": f.get_tensor(key).nbytes,
             }
     return tensor_stats
+
 
 def tensorstats_to_table(filepath, tensor_stats):
     table = Table(title=f"Tensor Stats <{filepath}>")
@@ -24,11 +26,16 @@ def tensorstats_to_table(filepath, tensor_stats):
     table.add_column("Dtype")
     table.add_column("Kilobytes")
     for key in tensor_stats:
-        table.add_row(key, str(tensor_stats[key]["shape"]), str(tensor_stats[key]["dtype"]), str(tensor_stats[key].nbytes / 1024))
+        table.add_row(
+            key,
+            str(tensor_stats[key]["shape"]),
+            str(tensor_stats[key]["dtype"]),
+            str(tensor_stats[key]["nbytes"] / 1024),
+        )
     return table
 
 
-def decompress(in_filepath:str, out_filepath: str):
+def decompress(in_filepath: str, out_filepath: str):
     lc = LosslessCompressor()
     tensors = {}
     with st.safe_open(in_filepath, "torch") as f:
