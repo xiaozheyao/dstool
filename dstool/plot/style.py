@@ -31,3 +31,14 @@ def set_font(fig):
     fig.update_xaxes(title=dict(font=dict(size=28)), tickfont_size=30)
     fig.update_yaxes(title=dict(font=dict(size=28)), tickfont_size=30)
     return fig
+
+color_palette = {
+    'general': [
+        '#f9daad',
+        '#90a0c8',
+        '#f19e7b',
+        '#72ba9d',
+        '#fbe9d8',
+        '#bfc8c9'
+    ]
+}
