@@ -15,6 +15,7 @@ def get_tensor_stats(filepath):
                 "shape": f.get_tensor(key).shape,
                 "dtype": f.get_tensor(key).dtype,
                 "nbytes": f.get_tensor(key).nbytes,
+                "range": f"{f.get_tensor(key).min():.2f} - {f.get_tensor(key).max():.2f}",
             }
     return tensor_stats
 

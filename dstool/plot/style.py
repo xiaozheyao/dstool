@@ -34,12 +34,12 @@ def set_font(fig):
 
 
 color_palette = {
-    'general': [
-        '#f9daad',
-        '#90a0c8',
-        '#f19e7b',
-        '#72ba9d',
-        '#fbe9d8',
-        '#bfc8c9'
+    "general": [
+        "#f9daad",
+        "#90a0c8",
+        "#f19e7b",
+        "#72ba9d",
+        "#fbe9d8",
+        "#bfc8c9",
     ]
 }
