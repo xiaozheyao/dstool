@@ -26,12 +26,14 @@ def tensorstats_to_table(filepath, tensor_stats):
     table.add_column("Shape")
     table.add_column("Dtype")
     table.add_column("Kilobytes")
+    table.add_column("Range")
     for key in tensor_stats:
         table.add_row(
             key,
             str(tensor_stats[key]["shape"]),
             str(tensor_stats[key]["dtype"]),
             str(tensor_stats[key]["nbytes"] / 1024),
+            tensor_stats[key]["range"],
         )
     return table
 
