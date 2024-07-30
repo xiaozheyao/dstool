@@ -1,67 +1,28 @@
-# adapted from https://github.com/awslabs/aws-cv-task2vec/blob/c5795e55ba773f9845498091a90eee2fcba5da31/task_similarity.py#L64
 import numpy as np
-import scipy.spatial.distance as distance
+from numpy.linalg import norm
+from numpy.typing import ArrayLike
+from typing import List
 
-def get_variance(e, normalized=False):
-    var = 1. / np.array(e.hessian)
-    if normalized:
-        lambda2 = 1. / np.array(e.scale)
-        var = var / lambda2
-    return var
+_DISTANCES = {}
 
-def get_variances(*embeddings, normalized=False):
-    return [get_variance(e, normalized=normalized) for e in embeddings]
+def _register_distance(distance_fn):
+    _DISTANCES[distance_fn.__name__] = distance_fn
+    return distance_fn
 
-def get_hessian(e, normalized=False):
-    hess = np.array(e.hessian)
-    if normalized:
-        scale = np.array(e.scale)
-        hess = hess / scale
-    return hess
+@_register_distance
+def cosine(e0: ArrayLike, e1: ArrayLike):
+    return np.dot(e0, e1) / (norm(e0) * norm(e1))
 
-def get_hessians(*embeddings, normalized=False):
-    return [get_hessian(e, normalized=normalized) for e in embeddings]
+@_register_distance
+def euclidean(e0: ArrayLike, e1: ArrayLike):
+    return norm(e0 - e1)
 
+def calc_distance(e0: ArrayLike, e1: ArrayLike, metric: str):
+    if metric not in _DISTANCES:
+        raise ValueError(f"Distance metric {metric} not found")
+    return _DISTANCES[metric](e0, e1)
 
-def get_scaled_hessian(e0, e1):
-    h0, h1 = get_hessians(e0, e1, normalized=False)
-    return h0 / (h0 + h1 + 1e-8), h1 / (h0 + h1 + 1e-8)
-
-def kl(e0, e1):
-    var0, var1 = get_variance(e0), get_variance(e1)
-    kl0 = 0.5 * (var0 / var1 - 1 + np.log(var1) - np.log(var0))
-    kl1 = 0.5 * (var1 / var0 - 1 + np.log(var0) - np.log(var1))
-    return np.maximum(kl0, kl1).sum()
-
-def asymmetric_kl(e0, e1):
-    var0, var1 = get_variance(e0), get_variance(e1)
-    kl0 = 0.5 * (var0 / var1 - 1 + np.log(var1) - np.log(var0))
-    kl1 = 0.5 * (var1 / var0 - 1 + np.log(var0) - np.log(var1))
-    return kl0.sum()
-
-def jsd(e0, e1):
-    var0, var1 = get_variance(e0), get_variance(e1)
-    var = 0.5 * (var0 + var1)
-    kl0 = 0.5 * (var0 / var - 1 + np.log(var) - np.log(var0))
-    kl1 = 0.5 * (var1 / var - 1 + np.log(var) - np.log(var1))
-    return (0.5 * (kl0 + kl1)).mean()
-
-def cosine(e0, e1):
-    h1, h2 = get_scaled_hessian(e0, e1)
-    return distance.cosine(h1, h2)
-
-def normalized_cosine(e0, e1):
-    h1, h2 = get_variances(e0, e1, normalized=True)
-    return distance.cosine(h1, h2)
-
-def correlation(e0, e1):
-    v1, v2 = get_variances(e0, e1, normalized=False)
-    return distance.correlation(v1, v2)
-
-def binary_entropy(p):
-    from scipy.special import xlogy
-    return - (xlogy(p, p) + xlogy(1. - p, 1. - p))
-
-def entropy(e0, e1):
-    h1, h2 = get_scaled_hessian(e0, e1)
-    return np.log(2) - binary_entropy(h1).mean()
+def calc_distances(e0: ArrayLike, e1s: List[ArrayLike], metric: str):
+    # use np.vectorize to apply the distance function to all elements in e1s
+    e1s = np.array(e1s)
+    return np.vectorize(lambda e1: calc_distance(e0, e1, metric))(e1s)

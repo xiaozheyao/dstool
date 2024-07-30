@@ -3,6 +3,7 @@ import json
 import numpy as np
 import pandas as pd
 import pyarrow as pa
+import pyarrow.parquet as pq
 from tqdm import tqdm
 from dstool.ml_utils.embedding import EmbeddingGenerator
 
@@ -17,21 +18,19 @@ def task2vec(args):
             sub_data = [json.loads(line) for line in f]
             # randomly sample `sample_size` number of tasks
             sub_data = np.random.choice(sub_data, args.sample_size, replace=True)
-        embeddings = embedding_generator.encode([d[args.column_name] for d in sub_data])
-        pa_tensor = pa.Tensor.from_numpy(embeddings)
+        embeddings = embedding_generator.encode([d[args.column_name] for d in sub_data]).tolist()
         data.append({
             "filename": filename,
-            "embeddings": pa_tensor
+            "embeddings": embeddings
         })
     df = pd.DataFrame(data)
-    df.to_parquet(args.output_dir)
-    
+    df.to_parquet(args.output)
     
 if __name__=="__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Task2Vec")
     parser.add_argument("--data-dir", type=str, help="Directory to a bunch of `task_name.jsonl` files", required=True)
-    parser.add_argument("--output-dir", type=str, help="Directory to save the embeddings", required=True)
+    parser.add_argument("--output", type=str, help="Directory to save the embeddings", required=True)
     parser.add_argument("--sample-size", type=int, help="Number of samples to use for training", default=256)
     parser.add_argument("--model-name", type=str, help="Name of the sentence-transformers model to use", default="all-MiniLM-L6-v2")
     parser.add_argument("--column-name", type=str, help="Column name in the jsonl file that contains the task description", default="text")

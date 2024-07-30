@@ -1,5 +1,5 @@
 from typing import List
-
+from numpy.typing import ArrayLike
 class EmbeddingGenerator():
     def __init__(self, model_name: str, pool=False):
         try:
@@ -17,3 +17,10 @@ class EmbeddingGenerator():
             return self.model.encode_multi_process(sentences, self.pool)
         else:
             return self.model.encode(sentences)
+    
+
+def reduce_dim(x: ArrayLike, n_components: int):
+    from sklearn.decomposition import PCA
+    pca = PCA(n_components=n_components)
+    return pca.fit_transform(x)
+    
