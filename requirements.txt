@@ -1,3 +1,4 @@
+Cython
 joblib
 plotly
 rich
@@ -5,7 +6,6 @@ safetensors
 typer
 py7zr
 zarr
-Cython
 cupy-cuda12x
 cchardet
 scikit-build
@@ -14,3 +14,7 @@ numcodecs
 gekko
 ninja
 sentence-transformers
+transformers
+pandas
+pyarrow
+tqdm
