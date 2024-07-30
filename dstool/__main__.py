@@ -25,7 +25,6 @@ def decompress(inpath: str, outpath: str):
     decompress(inpath, outpath)
     print("Done!")
 
-
 @app.command()
 def version():
     print("0.1.0")
