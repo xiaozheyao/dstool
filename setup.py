@@ -36,7 +36,7 @@ setup(
     url="https://github.com/xzyaoi/dstool/",
     long_description=read("README.md"),
     long_description_content_type="text/markdown",
-    author="xzyaoi",
+    author="Xiaozhe Yao",
     packages=find_packages(exclude=["tests", ".github"]),
     install_requires=read_requirements("requirements.txt"),
     entry_points={

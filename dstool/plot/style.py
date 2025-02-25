@@ -50,33 +50,45 @@ def _add_fonts():
     path = Path(tempfile.mkdtemp())
     for font in font_urls.keys():
         font_path = path / f"{font.replace(" ","-")}.ttf"
-        urllib.request.urlretrieve(
-            font_urls[font], font_path
+        urllib.request.urlretrieve(font_urls[font], font_path)
+        font_entry = font_manager.FontEntry(
+            fname=str(font_path), name=f"{font}"
         )
-        font_entry = font_manager.FontEntry(fname=str(font_path), name=f"{font}")
         font_manager.fontManager.ttflist.append(font_entry)
-        
-        font_entry = font_manager.FontEntry(fname=str(font_path), name=f"{font}", weight='bold', variant="bold", style="normal")
+
+        font_entry = font_manager.FontEntry(
+            fname=str(font_path),
+            name=f"{font}",
+            weight="bold",
+            variant="bold",
+            style="normal",
+        )
         font_manager.fontManager.ttflist.append(font_entry)
-        
-    print(font_manager.fontManager.ttflist)
 
 
-
-def set_styles(style="whitegrid", font_scale=1.2, title_size=22, 
-               label_size=18, tick_size=14, legend_size=16, annotation_size=12):
+def set_styles(
+    style="whitegrid",
+    font_scale=1.2,
+    title_size=22,
+    label_size=18,
+    tick_size=14,
+    legend_size=16,
+    annotation_size=12,
+):
     _add_fonts()
     sns.set_theme(style=style, font_scale=font_scale)
     # Set default figure size
     plt.rcParams["figure.figsize"] = (12, 6)
     # Set font sizes for different elements
-    plt.rcParams['axes.titlesize'] = title_size      # Size of plot titles
-    plt.rcParams['axes.labelsize'] = label_size      # Size of axis labels
-    plt.rcParams['xtick.labelsize'] = tick_size      # Size of x-tick labels
-    plt.rcParams['ytick.labelsize'] = tick_size      # Size of y-tick labels
-    plt.rcParams['legend.fontsize'] = legend_size    # Size of legend text
-    plt.rcParams['figure.titlesize'] = title_size+4  # Size of figure suptitle
-    
+    plt.rcParams["axes.titlesize"] = title_size  # Size of plot titles
+    plt.rcParams["axes.labelsize"] = label_size  # Size of axis labels
+    plt.rcParams["xtick.labelsize"] = tick_size  # Size of x-tick labels
+    plt.rcParams["ytick.labelsize"] = tick_size  # Size of y-tick labels
+    plt.rcParams["legend.fontsize"] = legend_size  # Size of legend text
+    plt.rcParams["figure.titlesize"] = (
+        title_size + 4
+    )  # Size of figure suptitle
+
     sns.set_context(
         "paper",
         font_scale=2,
@@ -85,14 +97,14 @@ def set_styles(style="whitegrid", font_scale=1.2, title_size=22,
             "lines.markersize": 10,
         },
     )
-    plt.rcParams['axes.titleweight'] = 'bold'        # Bold plot titles
-    plt.rcParams['axes.labelweight'] = 'bold'        # Bold axis labels
-    plt.rcParams['figure.titleweight'] = 'bold'      # Bold figure title
+    plt.rcParams["axes.titleweight"] = "bold"  # Bold plot titles
+    plt.rcParams["axes.labelweight"] = "bold"  # Bold axis labels
+    plt.rcParams["figure.titleweight"] = "bold"  # Bold figure title
 
     # Improve font appearance
     plt.rcParams["font.family"] = "Inter"
     plt.rcParams["font.sans-serif"] = ["Fira Code"]
-    
+
     # Adjust grid appearance
     plt.rcParams["grid.linestyle"] = "--"
     plt.rcParams["grid.alpha"] = 0.7
