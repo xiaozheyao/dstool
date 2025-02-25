@@ -6,7 +6,6 @@ typer
 py7zr
 zarr
 cupy-cuda12x
-cchardet
 scikit-build
 pytest
 numcodecs
