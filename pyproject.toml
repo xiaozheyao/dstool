@@ -1,0 +1,22 @@
+[build-system]
+    requires = ["setuptools>=42"]
+    build-backend = "setuptools.build_meta"
+[project]
+    name = "dstool"
+    dynamic = ["version", "dependencies", "optional-dependencies"]
+    description = "Toolbox for Data Science and Machine Learning"
+    authors = [
+        {name = "Xiaozhe Yao"},
+    ]
+    readme = "README.md"
+[project.urls]
+    Homepage = "https://github.com/xzyaoi/dstool/"
+[project.entry-points.dstool]
+    "dstool" = "dstool.__main__:main"
+[tool.setuptools]
+    packages = {find = {exclude = ["tests", ".github"]}}
+[tool.setuptools.dynamic]
+    version = {file = "dstool/VERSION"}
+    dependencies = {file = "requirements.txt"}
+[tool.setuptools.dynamic.optional-dependencies]
+    test = {file = "requirements-test.txt"}

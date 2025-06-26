@@ -1,7 +1,6 @@
 from sys import settrace
 from typing import Callable
 
-
 def stacktrace(func=None, exclude_files=["conda", "miniconda3", "Anaconda"]):
 
     def tracer_func(frame, event, arg):

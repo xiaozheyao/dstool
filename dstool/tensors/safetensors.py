@@ -4,8 +4,6 @@ import cupy as cp
 import safetensors as st
 from rich.table import Table
 from safetensors.torch import save_file
-from vllm.delta.compressor import LosslessCompressor
-
 
 def get_tensor_stats(filepath):
     tensor_stats = {}
@@ -18,7 +16,6 @@ def get_tensor_stats(filepath):
                 "range": f"{f.get_tensor(key).min():.2f} - {f.get_tensor(key).max():.2f}",
             }
     return tensor_stats
-
 
 def tensorstats_to_table(filepath, tensor_stats):
     table = Table(title=f"Tensor Stats <{filepath}>")
@@ -36,27 +33,3 @@ def tensorstats_to_table(filepath, tensor_stats):
             tensor_stats[key]["range"],
         )
     return table
-
-
-def decompress(in_filepath: str, out_filepath: str):
-    lc = LosslessCompressor()
-    tensors = {}
-    with st.safe_open(in_filepath, "torch") as f:
-        metadata = f.metadata()
-        keys = f.keys()
-        for key in keys:
-            tensors[key] = f.get_tensor(key)
-        tensor_dtypes = json.loads(metadata["dtype"])
-        tensor_shapes = json.loads(metadata["shape"])
-    with cp.cuda.Device(0):
-        for key in tensors.keys():
-            tensors[key] = cp.array(tensors[key], copy=False)
-    tensors = lc.decompress_state_dict(
-        tensors,
-        tensor_shapes,
-        tensor_dtypes,
-        use_bfloat16=False,
-        target_device="cuda:0",
-    )
-    # save the decompressed tensors
-    save_file(tensors, out_filepath)
